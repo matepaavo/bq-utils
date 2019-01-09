@@ -3,7 +3,7 @@ from unittest import mock
 
 from google.cloud import bigquery
 
-from bq_utils.bigquery_description_manager import BigQueryDescriptionManager
+from bqutils.bigquery_description_manager import BigQueryDescriptionManager
 
 
 class DescriptionManagerTestCase(unittest.TestCase):
