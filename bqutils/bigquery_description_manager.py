@@ -1,11 +1,9 @@
 """
 Utility to manage BigQuery fields descriptions.
 """
-import argparse
 import csv
 import logging
 import pprint
-import sys
 
 from google.cloud import bigquery
 
@@ -89,7 +87,7 @@ class BigQueryDescriptionManager:
         updated_schema = [bigquery.schema.SchemaField.from_api_repr(field) for field in temp_schema]
         return updated_schema
 
-    def upload_fields_descriptions_from_csv(self, csv_path, target_full_table_id):
+    def upload_field_descriptions(self, csv_path, target_full_table_id):
         """
         Uploads field descriptions from a csv file to a table/view.
         :param str csv_path: path to the csv file (header row should be emitted)
@@ -99,45 +97,3 @@ class BigQueryDescriptionManager:
             csv_reader = csv.reader(input_file)
             descriptions = {row[0]: row[1] for row in csv_reader}
             self._update_table(target_full_table_id, descriptions)
-
-
-def main():
-    """If used as the main module, this method parses the arguments and calls copy or upload"""
-    parser = argparse.ArgumentParser(
-        description='Copy field descriptions between BigQuery tables/views')
-    parser.add_argument('mode', type=str, choices=['copy', 'upload'])
-    parser.add_argument('--source_table_id',
-                        action='store',
-                        help='fully-qualified source table ID')
-    parser.add_argument('--target_table_id',
-                        action='store',
-                        help='fully-qualified target table ID',
-                        required=True)
-    parser.add_argument('--csv_path',
-                        action='store',
-                        help='path for the csv file')
-    parser.add_argument('--debug',
-                        action='store_true',
-                        help='set debug mode on, default is false')
-
-    args = parser.parse_args()
-    if args.mode == 'copy' and not args.source_table_id:
-        parser.error('source table id is missing for copy')
-    elif args.mode == 'upload' and not args.csv_path:
-        parser.error('csv path is missing for upload')
-
-    log_level = logging.DEBUG if args.debug else logging.INFO
-
-    logging.basicConfig(stream=sys.stdout, level=log_level,
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-    client = bigquery.Client()
-    description_manager = BigQueryDescriptionManager(client)
-    if args.mode == 'copy':
-        description_manager.copy_field_descriptions(args.source_table_id, args.target_table_id)
-    elif args.mode == 'upload':
-        description_manager.upload_fields_descriptions_from_csv(args.csv_path, args.target_table_id)
-
-
-if __name__ == '__main__':
-    main()
