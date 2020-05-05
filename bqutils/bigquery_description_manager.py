@@ -30,9 +30,9 @@ class BigQueryDescriptionManager:
         descriptions = self._get_descriptions_from_schema(source_table.schema)
         logging.debug('Source descriptions processed.')
         logging.debug('Source descriptions: %s', pprint.pformat(descriptions))
-        self._update_table(target_full_table_id, descriptions)
+        self.update_table_descriptions(target_full_table_id, descriptions)
 
-    def _update_table(self, target_full_table_id, descriptions):
+    def update_table_descriptions(self, target_full_table_id, descriptions):
         """
         Updates table with field descriptions.
         :param str target_full_table_id: fully-qualified target table ID
@@ -96,4 +96,4 @@ class BigQueryDescriptionManager:
         with open(csv_path) as input_file:
             csv_reader = csv.reader(input_file)
             descriptions = {row[0]: row[1] for row in csv_reader}
-            self._update_table(target_full_table_id, descriptions)
+            self.update_table_descriptions(target_full_table_id, descriptions)

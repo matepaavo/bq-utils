@@ -7,6 +7,18 @@ the schema tab and on the query editor pane on the BigQuery UI and this library 
 pip install bq-utils
 ```
 ## Python
+### Update table descriptions
+```python
+from google.cloud import bigquery
+from bqutils.bigquery_description_manager import BigQueryDescriptionManager
+
+bq_client = bigquery.Client()
+description_manager = BigQueryDescriptionManager(bq_client)
+descriptions = {'name':'bq-utils','version':'0.1.1'} 
+target_table_id = 't_project.t_dataset.t_table'
+description_manager.update_table_descriptions(target_table_id, descriptions)
+```
+
 ### Copy descriptions between tables and views
 ```python
 from google.cloud import bigquery

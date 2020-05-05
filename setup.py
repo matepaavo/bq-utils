@@ -7,7 +7,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="bq-utils",
-    version="0.1.0",
+    version="0.1.1",
     description="A collection of BigQuery utilities",
     long_description=README,
     long_description_content_type="text/markdown",
